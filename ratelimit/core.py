@@ -177,8 +177,11 @@ def get_usage(request, group=None, fn=None, key=None, rate=None, method=ALL,
             raise ImproperlyConfigured('Unknown ratelimit key: %s' % key)
         value = _ACCESSOR_KEYS[accessor](request, k)
     elif '.' in key:
-        keyfn = import_string(key)
-        value = keyfn(group, request)
+        try:
+            keyfn = import_string(key)
+            value = keyfn(group, request)
+        except ModuleNotFoundError:
+            value = key
     elif type(key) is str:
         value = key
     else:
