@@ -179,6 +179,8 @@ def get_usage(request, group=None, fn=None, key=None, rate=None, method=ALL,
     elif '.' in key:
         keyfn = import_string(key)
         value = keyfn(group, request)
+    elif type(key) is str:
+        value = key
     else:
         raise ImproperlyConfigured(
             'Could not understand ratelimit key: %s' % key)
