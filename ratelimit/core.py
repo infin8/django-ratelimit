@@ -100,10 +100,8 @@ def _get_window(value, period):
     return w
 
 
-def _make_cache_key(group, window, rate, value, methods):
-    count, period = _split_rate(rate)
-    safe_rate = '%d/%ds' % (count, period)
-    parts = [group, safe_rate, value, str(window)]
+def _make_cache_key(group, window, value, methods):
+    parts = [group, value, str(window)]
     if methods is not None:
         if methods == ALL:
             methods = ''
@@ -190,7 +188,7 @@ def get_usage(request, group=None, fn=None, key=None, rate=None, method=ALL,
 
     cache_name = getattr(settings, 'RATELIMIT_USE_CACHE', 'default')
     cache = caches[cache_name]
-    cache_key = _make_cache_key(group, window, rate, value, method)
+    cache_key = _make_cache_key(group, window, value, method)
 
     count = None
     added = cache.add(cache_key, initial_value, period + EXPIRATION_FUDGE)
